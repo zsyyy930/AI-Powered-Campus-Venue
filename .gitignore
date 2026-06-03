@@ -1,0 +1,18 @@
+# 密钥与本地配置（切勿提交）
+config.py
+.env
+
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+
+# 索引数据（P1 后生成，体积可能较大）
+data/
+
+# 系统与编辑器
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
