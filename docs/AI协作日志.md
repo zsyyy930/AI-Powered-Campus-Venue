@@ -21,6 +21,7 @@
 | 2026-06-04 | 今日收工：P3 代码已写，`test_conversation.py` 离线通过；`main.py` 多轮联调**未测完** | 待续 | 见「暂停接续备忘」 |
 | 2026-06-04 | **P3 联调完成**：`main.py` 三轮对话（推荐 / 多轮预约 / 转专业越界）；实录写入 `docs/实验报告.md` §4 | 已采纳 | 终端截图 `docs/images/p3-main-cli-test-2026-06-04.png`（示例假数据） |
 | 2026-06-04 | 本地语义模型：`EMBEDDING_LOCAL_ONLY`、repo_id 修正、`warmup()`；`docs/名词解释.md` 扩充 | 已采纳 | 校园网可不连 huggingface.co |
+| 2026-06-04 | **P5 Gradio**：新增 `app.py`，共用 `Conversation`；`requirements.txt` 增加 gradio | 已采纳 | `python app.py` → http://127.0.0.1:7860 |
 
 > **维护约定**：每完成一轮有意义的协作（定方案、改模块、联调、写报告段落等），在表中追加一行，并同步更新「当前进度」与「待办」。
 
@@ -64,7 +65,8 @@ knowledge/*.md
 - [x] **P3** 多轮 + 边界（代码完成）  
 - [x] **P3 联调**：`python main.py` 三轮实测（示例知识库）；截图见下文  
 - [ ] `knowledge/` **≥15 个** `.md` 本校文件  
-- [ ] P5 Gradio；实验报告  
+- [x] P5 Gradio（`app.py`）  
+- [ ] 实验报告 §一–三/五；Gradio 网页截图  
 
 ### 4. 建议的下一步（优先级）
 
