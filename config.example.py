@@ -7,16 +7,33 @@ API_BASE = "https://api.deepseek.com"
 API_KEY = "在这里粘贴你的-key"
 MODEL_NAME = "deepseek-chat"
 
-# 生成风格：问答建议偏低，减少胡编（0.0~2.0）
 TEMPERATURE = 0.3
-
-# 网络超时（秒）
 API_TIMEOUT = 60
 API_MAX_RETRIES = 2
 
-# ========== 知识库与检索（P0 仍用关键词，P2 再改向量）==========
+# ========== 知识库路径 ==========
 KNOWLEDGE_DIR = "knowledge"
-TOP_K = 5
 
-# 拼进 Prompt 的最多场馆条数（控制费用与长度）
+# ========== P1 切块 / P2 向量索引 ==========
+DATA_DIR = "data"
+CHUNKS_FILE = "chunks.json"
+EMBEDDINGS_FILE = "embeddings.npz"
+CHUNK_MIN_CHARS = 30
+BUILD_EMBEDDINGS_ON_INDEX = True
+
+# 向量化方式：
+#   tfidf                 — 离线可用，不下载模型（校园网推荐先用）
+#   sentence_transformers — 语义向量，需联网下载模型
+EMBEDDING_BACKEND = "tfidf"
+EMBEDDING_MODEL = "paraphrase-multilingual-MiniLM-L12-v2"
+# 国内网络：用 hf-mirror；模型已下全后可配合 EMBEDDING_LOCAL_ONLY 离线加载
+HF_ENDPOINT = "https://hf-mirror.com"
+# True=只读本地缓存（不 ping huggingface.co）；首次下载或缓存坏了改 False
+EMBEDDING_LOCAL_ONLY = True
+USE_VECTOR_INDEX = True
+# tfidf 相似度分数偏低，约 0.1~0.3；sentence_transformers 可用 0.3~0.5
+SIMILARITY_THRESHOLD = 0.1
+
+# ========== 检索与 Prompt ==========
+TOP_K = 5
 MAX_VENUES_IN_PROMPT = 3
