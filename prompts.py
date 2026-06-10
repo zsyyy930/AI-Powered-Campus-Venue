@@ -79,8 +79,11 @@ def build_rag_user_message(query: str, chunks: list[dict]) -> str:
         src = c.get("source", "")
         score = c.get("score")
         extra = f"（相似度 {score}）" if score is not None else ""
+        title = c.get("title", c.get("name", ""))
+        if title.startswith("自习-"):
+            title = title[len("自习-") :]
         blocks.append(
-            f"### 参考资料 {i}：{c.get('title', c.get('name', ''))} {extra}\n"
+            f"### 参考资料 {i}：{title} {extra}\n"
             f"来源文件：{src}\n{c.get('text', c.get('content', ''))}"
         )
     refs = "\n\n".join(blocks)

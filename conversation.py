@@ -10,7 +10,7 @@ from prompts import (
     build_retrieval_query,
     is_out_of_scope,
 )
-from retriever import retrieve
+from retriever import retrieve_for_prompt
 
 
 class Conversation:
@@ -36,7 +36,7 @@ class Conversation:
             return answer
 
         retrieval_q = build_retrieval_query(user_input, self.raw_history)
-        chunks = retrieve(retrieval_q)
+        chunks = retrieve_for_prompt(retrieval_q)
         user_msg = build_rag_user_message(user_input, chunks)
 
         self.messages.append({"role": "user", "content": user_msg})

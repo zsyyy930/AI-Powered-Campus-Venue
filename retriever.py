@@ -67,6 +67,75 @@ def _normalize_hit(chunk: dict, score: float | None = None) -> dict:
     return hit
 
 
+def _chunks_grouped_by_source() -> dict[str, list[dict]]:
+    """索引中同一 md 的全部 chunk，按 id 顺序排列。"""
+    grouped: dict[str, list[dict]] = {}
+    for c in load_chunks():
+        src = c.get("source", "")
+        if not src:
+            continue
+        grouped.setdefault(src, []).append(c)
+    for parts in grouped.values():
+        parts.sort(key=lambda x: x.get("id", ""))
+    return grouped
+
+
+def merge_hits_by_source(hits: list[dict], max_sources: int | None = None) -> list[dict]:
+    """
+    按 source（md 文件）合并检索结果：
+    - 同一文件在 top 池里出现过的，将其在索引中的全部 ## chunk 拼成一条；
+    - 保留该文件最高相似度作为排序依据。
+    """
+    if not hits:
+        return []
+
+    max_sources = max_sources or getattr(config, "MAX_VENUES_IN_PROMPT", 3)
+    all_by_source = _chunks_grouped_by_source()
+
+    source_order: list[str] = []
+    best_score: dict[str, float] = {}
+    for h in hits:
+        src = h.get("source", "")
+        if not src:
+            continue
+        score = float(h.get("score", 0) or 0)
+        if src not in best_score:
+            source_order.append(src)
+            best_score[src] = score
+        else:
+            best_score[src] = max(best_score[src], score)
+
+    merged: list[dict] = []
+    for src in source_order[:max_sources]:
+        parts = all_by_source.get(src)
+        if parts:
+            text = "\n\n".join(p.get("text", "") for p in parts)
+        else:
+            same = [h for h in hits if h.get("source") == src]
+            text = "\n\n".join(h.get("text", "") for h in same)
+        stem = Path(src).stem
+        merged.append(
+            {
+                "source": src,
+                "title": stem,
+                "name": stem,
+                "text": text,
+                "content": text,
+                "score": round(best_score[src], 4),
+            }
+        )
+    return merged
+
+
+def retrieve_for_prompt(query: str, max_sources: int | None = None) -> list[dict]:
+    """检索供 Prompt 使用：先扩大 chunk 池，再按 md 文件合并为完整条目。"""
+    pool = getattr(config, "RETRIEVE_POOL_SIZE", None)
+    if pool is None:
+        pool = max(getattr(config, "TOP_K", 5) * 4, 20)
+    hits = retrieve(query, top_k=pool)
+    return merge_hits_by_source(hits, max_sources)
+
+
 def _retrieve_vector(query: str, top_k: int) -> list[dict]:
     from embedder import embed_query
 

@@ -36,4 +36,6 @@ SIMILARITY_THRESHOLD = 0.1
 
 # ========== 检索与 Prompt ==========
 TOP_K = 5
+# 向量检索先取若干 chunk，再按 md 文件合并后送入 Prompt
+RETRIEVE_POOL_SIZE = 20
 MAX_VENUES_IN_PROMPT = 3
