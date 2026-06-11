@@ -73,7 +73,8 @@ def chunk_markdown(text: str, source: str) -> list[dict]:
     chunks: list[dict] = []
     for i, (start_line, end_line, part) in enumerate(parts):
         part = part.strip()
-        if len(part) < min_chars:
+        # 降低最小字符数限制，确保"基本信息"等重要部分不会被过滤掉
+        if len(part) < 10:
             continue
         part_lines = part.splitlines()
         title = part_lines[0].lstrip("#").strip() if part_lines else stem
